@@ -139,6 +139,7 @@ void create_individual_population()
         if (individual[max_value].value<individual[i].value) max_value=i;
         if (individual[min_value].value>individual[i].value) min_value=i;
     }
+    sort(individual,individual+num_of_individual+1,myfunction);
 }
 
 __individual crossover(__individual a,__individual b)
@@ -164,6 +165,7 @@ __individual crossover(__individual a,__individual b)
 
 __individual mutation(__individual a)
 {
+    __individual tmp=a;
     do
     {
     int tmp=rand()%n+1;
@@ -185,12 +187,47 @@ __individual mutation(__individual a)
     return a;
 }
 
-void output()
+void selection(__individual tmp_individual)
 {
+        if (tmp_individual.value>individual[num_of_individual].value)
+        {
+            individual[num_of_individual]=tmp_individual;
+            sort(individual,individual+num_of_individual+1,myfunction);
+        }
+}
+
+void Genetic_Algorithm()
+{
+    int tmp1,tmp2,tmp3;
+    int d=0;
+    __individual tmp_individual;
+    do
+    {
+
+        tmp1=rand()%(num_of_individual+1);
+        tmp2=rand()%(num_of_individual+1);
+        tmp3=rand()%(num_of_individual+1);
+        tmp_individual=crossover(individual[tmp1],individual[tmp2]);
+        selection(tmp_individual);
+        tmp_individual=mutation(individual[tmp3]);
+        selection(tmp_individual);
+
+        d++;
+        //cout<<d<<endl;
+        if (d==100000) break;
+    }
+    //while (true);
+    while (individual[num_of_individual].value!=individual[0].value);
+    cout<<d<<endl;
+}
+
+void output()
+{   /*
     for (int i=1;i<=n;i++)
     {
         cout<<item[i].v<<"\t"<<item[i].w<<"\t"<<endl;
     }
+    */
     cout<<endl;
     for (int i=0;i<=num_of_individual;i++)
     {
@@ -198,17 +235,20 @@ void output()
         cout<<individual[i].selection[j];
         cout<<"\t"<<individual[i].value<<"\t"<<individual[i].weight;
         cout<<endl;
-
     }
-    cout<<max_value<<" "<<min_value<<endl;
+    //cout<<max_value<<" "<<min_value<<endl;
 }
 
 
 int main()
 {
     get_data();
-    input(data[3].filename);
+    input(data[10].filename);
     create_individual_population();
-
-    output();
+    //output();
+    cout<<endl;
+    Genetic_Algorithm();
+    cout<<individual[0].value<<" "<<individual[0].weight<<endl;
+    cout<<endl;
+    //output();
 }
